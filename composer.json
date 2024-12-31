@@ -1,0 +1,31 @@
+{
+    "name": "oh86/laravel-gw-auth",
+    "description": "auth tools for oh86/laravel-gw",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Oh86\\GW\\Auth\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "chengj",
+            "email": "chen.gj@qq.com"
+        }
+    ],
+    "require": {
+        "oh86/sm": "^1.4",
+        "oh86/laravel-http-tools": "*"
+    },
+    "require-dev": {
+        "laravel/framework": "*"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Oh86\\GW\\Auth\\GatewayAuthServiceProvider"
+            ]
+        }
+    }
+}
