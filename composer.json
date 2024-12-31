@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "oh86/sm": "^1.4",
+        "oh86/sm": "*",
         "oh86/laravel-http-tools": "*"
     },
     "require-dev": {
