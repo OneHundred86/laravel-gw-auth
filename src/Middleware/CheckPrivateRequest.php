@@ -1,6 +1,6 @@
 <?php
 
-namespace Oh86\GW\Middleware;
+namespace Oh86\GW\Auth\Middleware;
 
 use Illuminate\Http\Request;
 use Oh86\Http\Exceptions\ErrorCodeException;
