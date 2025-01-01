@@ -13,7 +13,7 @@ php artisan vendor:publish --provider='Oh86\GW\Auth\GatewayAuthServiceProvider'
 ```php
 return [
     'private-requests' => [
-        'admin' => [
+        'gw' => [
             'app' => env('GW_AUTH_PRIVATE_APP'),
             'ticket' => env('GW_AUTH_PRIVATE_TICKET'),
             'ignore-check' => env('APP_DEBUG', false),  // 是否忽略校验
@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Route;
 use Oh86\GW\Auth\Middleware\CheckPrivateRequest;
 
 Route::post('api/private/test', [TestController::class, 'test'])->middleware([
-    CheckPrivateRequest::class . ':admin',
+    CheckPrivateRequest::class . ':gw',
 ]);
 ```
 
@@ -67,7 +67,7 @@ Route::post('api/private/auth/test', function(Request $request) {
 
     return $user;
 })->middleware([
-    CheckPrivateRequest::class . ':admin',
+    CheckPrivateRequest::class . ':gw',
     'auth:gw-auth',
 ]);
 ```
