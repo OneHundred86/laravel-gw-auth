@@ -16,6 +16,7 @@ return [
         'admin' => [
             'app' => env('GW_AUTH_PRIVATE_APP'),
             'ticket' => env('GW_AUTH_PRIVATE_TICKET'),
+            'ignore-check' => env('APP_DEBUG', false),  // 是否忽略校验
         ],
 
         // ...
@@ -45,7 +46,7 @@ return [
 
         'gw-auth' => [
             'driver' => 'gw',
-            'header' => 'Gw-Auth-Info',
+            'header' => 'GW-Auth-Info',
             'user-class' => Oh86\GW\Auth\Guard\User::class,
         ]
     ],
