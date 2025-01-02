@@ -14,9 +14,10 @@ php artisan vendor:publish --provider='Oh86\GW\Auth\GatewayAuthServiceProvider'
 return [
     'private-requests' => [
         'gw' => [
-            'app' => env('GW_AUTH_PRIVATE_APP'),
-            'ticket' => env('GW_AUTH_PRIVATE_TICKET'),
-            'ignore-check' => env('APP_DEBUG', false),  // 是否忽略校验
+            'app' => env('GW_AUTH_PRIVATE_APP'),        // 必须
+            'ticket' => env('GW_AUTH_PRIVATE_TICKET'),  // 必须
+            'note' => '这是备注',                        // 备注，非必须
+            'ignore-check' => env('APP_DEBUG', false),  // 是否忽略校验，非必须
         ],
 
         // ...
@@ -70,4 +71,20 @@ Route::post('api/private/auth/test', function(Request $request) {
     CheckPrivateRequest::class . ':gw',
     'auth:gw-auth',
 ]);
+```
+
+#### 3. 发送私密请求
+```php
+use Oh86\GW\Auth\HttpClient\PrivateRequest;
+
+$req = new PrivateRequest([
+    'baseUrl' => 'http://127.0.0.1:8000', 
+    'app' => 'app1', 
+    'ticket' => '...',
+    ]);
+
+$response = $req->get('api/private/test', ['foo' => 'bar']);
+
+$status = $response->status();
+$arr = $response->json();
 ```
