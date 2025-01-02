@@ -8,10 +8,8 @@ use Oh86\Http\Exceptions\ErrorCodeException;
 class CheckPrivateRequest
 {
     /**
-     * Summary of handle
      * @param Request $request
      * @param \Closure $next
-     * @return void
      */
     public function handle($request, \Closure $next, string $privateRequest)
     {

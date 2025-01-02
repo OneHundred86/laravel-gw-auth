@@ -73,7 +73,7 @@ Route::post('api/private/auth/test', function(Request $request) {
 ]);
 ```
 
-#### 3. 发送私密请求
+#### 3.发送私密请求
 ```php
 use Oh86\GW\Auth\HttpClient\PrivateRequest;
 
@@ -87,4 +87,36 @@ $response = $req->get('api/private/test', ['foo' => 'bar']);
 
 $status = $response->status();
 $arr = $response->json();
+```
+
+#### 4.校验权限编码
+##### 4.1 配置 `config/gw-auth.php`
+```php
+return [
+    // ...
+
+    // 配置权限编码的请求头
+    'permission-codes-header' => env('GW_AUTH_PERMISSION_CODES_HEADER', 'GW-Permission-Codes'),
+
+    // ...
+];
+```
+
+##### 4.2 使用中间件 `Oh86\GW\Auth\Middleware\CheckPermissionCode`
+```php
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use Oh86\GW\Auth\Middleware\CheckPrivateRequest;
+use Oh86\GW\Auth\Middleware\CheckPermissionCode;
+
+Route::post('api/private/auth/test', function(Request $request) {
+    $user = Auth::user();
+
+    return $user;
+})->middleware([
+    CheckPrivateRequest::class . ':gw',
+    'auth:gw-auth',
+    CheckPermissionCode::class . ':add-post',
+]);
 ```
