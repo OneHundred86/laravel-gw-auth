@@ -12,16 +12,12 @@ php artisan vendor:publish --provider='Oh86\GW\Auth\GatewayAuthServiceProvider'
 ##### 1.1 配置 `config/gw-auth.php`
 ```php
 return [
-    'private-requests' => [
-        'gw' => [
-            'app' => env('GW_AUTH_PRIVATE_APP'),        // 必须
-            'ticket' => env('GW_AUTH_PRIVATE_TICKET'),  // 必须
-            'note' => '这是备注',                        // 备注，非必须
-            'ignore-check' => env('APP_DEBUG', false),  // 是否忽略校验，非必须
-        ],
-
-        // ...
+    'private-request' => [
+        'app' => env('GW_AUTH_PRIVATE_APP'),        // 必须
+        'ticket' => env('GW_AUTH_PRIVATE_TICKET'),  // 必须
+        'ignore-check' => env('APP_DEBUG', false),  // 是否忽略校验，非必须
     ],
+    // ...
 ];
 ```
 
@@ -32,7 +28,7 @@ use Illuminate\Support\Facades\Route;
 use Oh86\GW\Auth\Middleware\CheckPrivateRequest;
 
 Route::post('api/private/test', [TestController::class, 'test'])->middleware([
-    CheckPrivateRequest::class . ':gw',
+    CheckPrivateRequest::class,
 ]);
 ```
 
@@ -68,7 +64,7 @@ Route::post('api/private/auth/test', function(Request $request) {
 
     return $user;
 })->middleware([
-    CheckPrivateRequest::class . ':gw',
+    CheckPrivateRequest::class,
     'auth:gw-auth',
 ]);
 ```
@@ -115,7 +111,7 @@ Route::post('api/private/auth/test', function(Request $request) {
 
     return $user;
 })->middleware([
-    CheckPrivateRequest::class . ':gw',
+    CheckPrivateRequest::class,
     'auth:gw-auth',
     CheckPermissionCode::class . ':add-post',
 ]);

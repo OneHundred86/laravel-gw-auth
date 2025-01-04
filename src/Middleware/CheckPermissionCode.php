@@ -2,6 +2,7 @@
 
 namespace Oh86\GW\Auth\Middleware;
 
+use Oh86\GW\Auth\Facades\PermissionCode;
 use Oh86\Http\Exceptions\ErrorCodeException;
 
 class CheckPermissionCode
@@ -18,6 +19,8 @@ class CheckPermissionCode
         if (!in_array($permissionCode, $permissionCodes)) {
             throw new ErrorCodeException(403, "permission denied", null, 403);
         }
+
+        PermissionCode::setCodes($permissionCodes);
 
         return $next($request);
     }

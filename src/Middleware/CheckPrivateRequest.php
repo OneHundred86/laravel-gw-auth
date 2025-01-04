@@ -11,12 +11,12 @@ class CheckPrivateRequest
      * @param Request $request
      * @param \Closure $next
      */
-    public function handle($request, \Closure $next, string $privateRequest)
+    public function handle($request, \Closure $next)
     {
         /**
          * @var array{app: string, ticket: string, ignore-check: null|bool}
          */
-        $config = config("gw-auth.private-requests.$privateRequest");
+        $config = config("gw-auth.private-request");
 
         if (!$config || $config['app'] != $request->header('GW-Private-App')) {
             throw new ErrorCodeException(403, "app error", null, 403);
