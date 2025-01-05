@@ -12,12 +12,19 @@ php artisan vendor:publish --provider='Oh86\GW\Auth\GatewayAuthServiceProvider'
 ##### 1.1 配置 `config/gw-auth.php`
 ```php
 return [
-    'private-request' => [
-        'app' => env('GW_AUTH_PRIVATE_APP'),        // 必须
-        'ticket' => env('GW_AUTH_PRIVATE_TICKET'),  // 必须
-        'ignore-check' => env('APP_DEBUG', false),  // 是否忽略校验，非必须
+    'default' => env('GW_AUTH_DEFAULT_GATEWAY', 'default'),
+
+    // 可配置后台接口网关、前台接口网关、openapi接口网关等
+    'gateways' => [
+        'default' => [
+            'private-request' => [
+                'app' => env('GW_AUTH_PRIVATE_APP'),
+                'ticket' => env('GW_AUTH_PRIVATE_TICKET'),
+                'ignore-check' => env('APP_DEBUG', false),  // 是否忽略校验，缺省是false
+            ],
+        ],
+
     ],
-    // ...
 ];
 ```
 
@@ -83,36 +90,4 @@ $response = $req->get('api/private/test', ['foo' => 'bar']);
 
 $status = $response->status();
 $arr = $response->json();
-```
-
-#### 4.校验权限编码
-##### 4.1 配置 `config/gw-auth.php`
-```php
-return [
-    // ...
-
-    // 配置权限编码的请求头
-    'permission-codes-header' => env('GW_AUTH_PERMISSION_CODES_HEADER', 'GW-Permission-Codes'),
-
-    // ...
-];
-```
-
-##### 4.2 使用中间件 `Oh86\GW\Auth\Middleware\CheckPermissionCode`
-```php
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use Oh86\GW\Auth\Middleware\CheckPrivateRequest;
-use Oh86\GW\Auth\Middleware\CheckPermissionCode;
-
-Route::post('api/private/auth/test', function(Request $request) {
-    $user = Auth::user();
-
-    return $user;
-})->middleware([
-    CheckPrivateRequest::class,
-    'auth:gw-auth',
-    CheckPermissionCode::class . ':add-post',
-]);
 ```

@@ -4,6 +4,7 @@ namespace Oh86\GW\Auth\Guard;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Arr;
 
 class User implements Authenticatable, Arrayable, \JsonSerializable
 {
@@ -60,9 +61,9 @@ class User implements Authenticatable, Arrayable, \JsonSerializable
         $this->data = $data;
     }
 
-    public function getData()
+    public function getData($key = null)
     {
-        return $this->data;
+        return Arr::get($this->data, $key);
     }
 
     public function __get($name)
