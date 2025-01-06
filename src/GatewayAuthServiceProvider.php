@@ -5,15 +5,11 @@ namespace Oh86\GW\Auth;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Oh86\GW\Auth\Guard\RequestGuard;
-use Oh86\GW\Auth\Permission\PermissionCode;
 
 class GatewayAuthServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app->singleton(PermissionCode::class, function ($app) {
-            return new PermissionCode();
-        });
     }
 
     public function boot()
