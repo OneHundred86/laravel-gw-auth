@@ -25,7 +25,10 @@
         "laravel": {
             "providers": [
                 "Oh86\\GW\\Auth\\GatewayAuthServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "ServiceDiscovery": "Oh86\\GW\\Auth\\Facades\\ServiceDiscovery"
+            }
         }
     }
 }

@@ -77,6 +77,8 @@ Route::post('api/private/auth/test', function(Request $request) {
 ```
 
 #### 3.发送私密请求
+
+##### 3.1 示例一
 ```php
 use Oh86\GW\Auth\HttpClient\PrivateRequest;
 
@@ -85,6 +87,40 @@ $req = new PrivateRequest([
     'app' => 'app1', 
     'ticket' => '...',
     ]);
+
+$response = $req->get('api/private/test', ['foo' => 'bar']);
+
+$status = $response->status();
+$arr = $response->json();
+```
+
+##### 3.2 示例二，使用带有服务发现的私密请求
+###### 先配置 `config/gw-auth.php`
+```php
+return [
+    'default' => env('GW_AUTH_DEFAULT_GATEWAY', 'default'),
+
+    'gateways' => [
+        'default' => [
+            // ...
+
+            // 服务发现配置
+            'service-discovery' => [
+                'baseUrl' => env('GW_AUTH_SERVICE_DISCOVERY_BASE_URL'),
+                'app' => env('GW_AUTH_SERVICE_DISCOVERY_APP'),
+                'ticket' => env('GW_AUTH_SERVICE_DISCOVERY_TICKET'),
+            ],
+        ],
+
+    ],
+];
+```
+
+###### 请求示例：
+```php
+use Oh86\GW\Auth\HttpClient\PrivateRequestWithServiceDiscovery;
+
+$req = new PrivateRequestWithServiceDiscovery('app1');
 
 $response = $req->get('api/private/test', ['foo' => 'bar']);
 
