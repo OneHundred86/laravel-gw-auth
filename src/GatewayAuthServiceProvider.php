@@ -19,10 +19,10 @@ class GatewayAuthServiceProvider extends ServiceProvider
 
         /** @var ServiceDiscoveryManager $serviceDiscoveryManager */
         $serviceDiscoveryManager = $this->app->make(ServiceDiscoveryManager::class);
-        foreach (config('gw-auth.gateways') as $name => $config) {
+        foreach (config('gw-auth.gateways') as $gwName => $config) {
             if ($config['service-discovery'] ?? false) {
-                $serviceDiscoveryManager->extend($name, function () use ($name, $config) {
-                    return new ServiceDiscovery($config['service-discovery'], $name);
+                $serviceDiscoveryManager->extend($gwName, function () use ($gwName, $config) {
+                    return new ServiceDiscovery($config['service-discovery'], $gwName);
                 });
             }
         }

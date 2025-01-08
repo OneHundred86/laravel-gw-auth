@@ -11,18 +11,21 @@ class ServiceDiscovery
     private PrivateRequest $http;
 
     /** @var array{baseUrl: string, app: string, ticket: string} */
-    private array $config;
+    private array $privateRequestConfig;
+    private int $serviceCacheTTL;
     private string $gwName;
 
     /**
-     * @param array $config
+     * @param array{private-request: array, service-cache-ttl:int} $config
      * @param string $gwName
      */
     public function __construct(array $config, string $gwName)
     {
-        $this->config = $config;
+        $this->privateRequestConfig = $config['private-request'];
+        $this->serviceCacheTTL = $config['service-cache-ttl'];
+
         $this->gwName = $gwName;
-        $this->http = new PrivateRequest($config);
+        $this->http = new PrivateRequest($this->privateRequestConfig);
     }
 
     public function getHttpClient(): PrivateRequest
@@ -46,7 +49,7 @@ class ServiceDiscovery
             ->get('gw/service/config', $datas);
 
         if ($response->json('code') !== 0) {
-            throw new HttpRequestException($response->status(), $response->body(), $this->config['baseUrl'] . '/gw/service/config', $datas);
+            throw new HttpRequestException($response->status(), $response->body(), $this->privateRequestConfig['baseUrl'] . '/gw/service/config', $datas);
         }
 
         return $response->json('data');
@@ -58,7 +61,7 @@ class ServiceDiscovery
      * @throws \Illuminate\Contracts\Cache\LockTimeoutException
      * @return null | array{baseUrl:string, app:string, ticket:string}
      */
-    public function getCachedServiceConfig(string $appTag): ?array
+    public function getCachedServiceConfig(string $appTag)
     {
         $key = "ServiceDiscovery:{$this->gwName}:" . $appTag;
         $config = Cache::get($key);
@@ -69,21 +72,21 @@ class ServiceDiscovery
         }
 
         // 加互斥锁
-        $config = Cache::lock("mutexGetServiceConfig:{$this->gwName}:$appTag", 60)
+        return Cache::lock("mutexGetServiceConfig:{$this->gwName}:$appTag", 60)
             ->block(
                 10,
-                function () use ($appTag) {
-                    return $this->getServiceConfig($appTag);
+                function () use ($appTag, $key) {
+                    $config = $this->getServiceConfig($appTag);
+
+                    if (!$config) {
+                        Cache::put($key, 'NULL', $this->serviceCacheTTL);
+                    } else {
+                        Cache::put($key, $config, $this->serviceCacheTTL);
+                    }
+
+                    return $config;
                 }
             );
-
-        if (!$config) {
-            Cache::put($key, 'NULL', 60);
-            return null;
-        } else {
-            Cache::put($key, $config, 60 * 5);
-            return $config;
-        }
     }
 
     public function clearCachedServiceConfig(string $appTag)

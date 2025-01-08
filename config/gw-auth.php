@@ -12,11 +12,14 @@ return [
                 'ignore-check' => env('APP_DEBUG', false),  // 是否忽略校验，缺省是false
             ],
 
-            // 服务发现配置，用于自动获取其他服务的配置
+            // 服务发现配置，用于自动获取其他应用服务的private-request配置
             'service-discovery' => [
-                'baseUrl' => env('GW_AUTH_SERVICE_DISCOVERY_BASE_URL'),
-                'app' => env('GW_AUTH_SERVICE_DISCOVERY_APP'),
-                'ticket' => env('GW_AUTH_SERVICE_DISCOVERY_TICKET'),
+                'private-request' => [
+                    'baseUrl' => env('GW_AUTH_SERVICE_DISCOVERY_BASE_URL'),
+                    'app' => env('GW_AUTH_SERVICE_DISCOVERY_APP'),
+                    'ticket' => env('GW_AUTH_SERVICE_DISCOVERY_TICKET'),
+                ],
+                'service-cache-ttl' => env('GW_AUTH_SERVICE_DISCOVERY_CACHE_TTL', 60),
             ],
         ],
 

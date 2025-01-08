@@ -106,9 +106,11 @@ return [
 
             // 服务发现配置
             'service-discovery' => [
-                'baseUrl' => env('GW_AUTH_SERVICE_DISCOVERY_BASE_URL'),
-                'app' => env('GW_AUTH_SERVICE_DISCOVERY_APP'),
-                'ticket' => env('GW_AUTH_SERVICE_DISCOVERY_TICKET'),
+                'private-request' => [
+                    'baseUrl' => env('GW_AUTH_SERVICE_DISCOVERY_BASE_URL'),
+                    'app' => env('GW_AUTH_SERVICE_DISCOVERY_APP'),
+                    'ticket' => env('GW_AUTH_SERVICE_DISCOVERY_TICKET'),
+                ],
             ],
         ],
 
