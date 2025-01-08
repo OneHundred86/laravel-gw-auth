@@ -39,4 +39,9 @@ class PrivateRequest extends PendingRequest
 
         return parent::send($method, $url, $options);
     }
+
+    public function getRequestUrl(string $url): string
+    {
+        return ltrim(rtrim($this->baseUrl, '/') . '/' . ltrim($url, '/'), '/');
+    }
 }
