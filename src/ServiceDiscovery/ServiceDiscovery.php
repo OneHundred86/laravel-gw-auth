@@ -76,6 +76,14 @@ class ServiceDiscovery
             ->block(
                 10,
                 function () use ($appTag, $key) {
+                    // 获取锁后，再次检查缓存
+                    $config = Cache::get($key);
+                    if ($config == 'NULL') {
+                        return null;
+                    } elseif ($config) {
+                        return $config;
+                    }
+
                     $config = $this->getServiceConfig($appTag);
 
                     if (!$config) {
