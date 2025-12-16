@@ -28,10 +28,24 @@ class PrivateRequest extends PendingRequest
         return sm3(sprintf("%s%s%s", $this->app, $timestamp, $this->ticket));
     }
 
+    /**
+     * 替换或者增加请求头
+     * @param array $headers
+     * @return $this
+     */
+    public function upsertHeaders(array $headers)
+    {
+        $this->options['headers'] = array_merge(
+            $this->options['headers'] ?? [],
+            $headers,
+        );
+        return $this;
+    }
+
     public function send(string $method, string $url, array $options = [])
     {
         $now = time();
-        $this->withHeaders([
+        $this->upsertHeaders([
             'GW-Private-App' => $this->app,
             'GW-Private-Time' => $now,
             'GW-Private-Sign' => $this->genSignature($now),
@@ -45,7 +59,7 @@ class PrivateRequest extends PendingRequest
         return $this->baseUrl;
     }
 
-    public function getRequestUrl(string $url): string
+    public function getFullRequestUrl(string $url): string
     {
         return ltrim(rtrim($this->baseUrl, '/') . '/' . ltrim($url, '/'), '/');
     }

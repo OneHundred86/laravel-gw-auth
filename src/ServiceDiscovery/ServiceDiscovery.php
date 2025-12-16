@@ -8,8 +8,6 @@ use Oh86\Http\Exceptions\HttpRequestException;
 
 class ServiceDiscovery
 {
-    private PrivateRequest $http;
-
     /** @var array{baseUrl: string, app: string, ticket: string} */
     private array $privateRequestConfig;
     private int $serviceCacheTTL;
@@ -25,12 +23,11 @@ class ServiceDiscovery
         $this->serviceCacheTTL = $config['service-cache-ttl'];
 
         $this->gwName = $gwName;
-        $this->http = new PrivateRequest($this->privateRequestConfig);
     }
 
-    public function getHttpClient(): PrivateRequest
+    public function createHttpClient(): PrivateRequest
     {
-        return $this->http;
+        return new PrivateRequest($this->privateRequestConfig);
     }
 
     /**
@@ -41,7 +38,7 @@ class ServiceDiscovery
     public function getServiceConfig(string $appTag): ?array
     {
         $datas = ['appTag' => $appTag];
-        $response = $this->http
+        $response = $this->createHttpClient()
             // ->withOptions(['debug' => true])
             ->withHeaders([
                 'Accept' => 'application/json',
