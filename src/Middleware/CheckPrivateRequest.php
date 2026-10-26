@@ -37,7 +37,7 @@ class CheckPrivateRequest
                 $config['ticket'],
             ));
 
-            if ($expectedSignature != $request->header('GW-Private-Sign')) {
+            if ($expectedSignature !== $request->header('GW-Private-Sign')) {
                 throw new ErrorCodeException(403, "signature error", null, 403);
             }
         }
